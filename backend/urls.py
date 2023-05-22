@@ -35,4 +35,5 @@ urlpatterns = [
           jwt_views.TokenRefreshView.as_view(), 
           name ='token_refresh'),
     path('', include('zergcoach.urls')),
+    path('logout/', views.LogoutView.as_view(), name ='logout'),
 ]
