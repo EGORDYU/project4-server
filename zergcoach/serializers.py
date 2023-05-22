@@ -7,6 +7,9 @@ class BuildOrderSerializer(serializers.ModelSerializer):
         fields = ('id', 'title', 'description')
 
 class CommentSerializer(serializers.ModelSerializer):
+    username = serializers.ReadOnlyField(source='user.username')
+
     class Meta:
         model = Comment
-        fields = ('id', 'build_order', 'user', 'content')
+        fields = ('id', 'build_order', 'user', 'content', 'username')
+

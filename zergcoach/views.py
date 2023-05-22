@@ -11,4 +11,14 @@ class BuildOrderView(viewsets.ModelViewSet):
 
 class CommentView(viewsets.ModelViewSet):
     serializer_class = CommentSerializer
-    queryset = Comment.objects.all()
+
+    def get_queryset(self):
+        """
+        Optionally restricts the returned comments to a given build_order,
+        by filtering against a `build_order` query parameter in the URL.
+        """
+        queryset = Comment.objects.all()
+        build_order_id = self.request.query_params.get('build_order', None)
+        if build_order_id is not None:
+            queryset = queryset.filter(build_order_id=build_order_id)
+        return queryset

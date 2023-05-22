@@ -21,7 +21,8 @@ from zergcoach import views
 
 router = routers.DefaultRouter()
 router.register(r'buildorders', views.BuildOrderView)
-router.register(r'comments', views.CommentView)
+router.register(r'comments', views.CommentView, basename='comment')
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
