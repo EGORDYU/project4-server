@@ -10,6 +10,8 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth.models import User
 from rest_framework import generics
 from .serializers import UserCreateSerializer
+from django.contrib.auth import get_user_model
+
 
 
 
@@ -56,3 +58,45 @@ class LogoutView(APIView):
 class UserCreateView(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserCreateSerializer
+
+
+
+class UserProfileView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        # Retrieve and return the user profile data
+        user = request.user
+        profile_data = {
+            'user_id': user.id,  # Include the user_id field
+            'username': user.username,
+            # Include other profile data fields as needed
+        }
+        return Response(profile_data)
+
+    
+
+class TokenRefreshView(APIView):
+    def post(self, request):
+        refresh_token = request.data.get('refresh')
+        if refresh_token:
+            try:
+                token = RefreshToken(refresh_token)
+                access_token = str(token.access_token)
+                refresh_token = str(token)
+                user_id = token['user_id']  # Assuming the user ID is stored in the token payload
+                user = get_user_model().objects.get(pk=user_id)
+                username = user.username
+                # Other token refresh logic if needed
+
+                return Response({
+                    'access': access_token,
+                    'refresh': refresh_token,
+                    'user_id': user_id,
+                    'username': username,  # Include the user ID in the response
+                })
+            except:
+                # Token refresh error handling
+                pass
+        
+        return Response(status=400)

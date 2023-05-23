@@ -7,7 +7,7 @@ import logging
 class BuildOrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = BuildOrder
-        fields = ('id', 'title', 'description')
+        fields = ('id', 'title', 'description', 'buildorder','matchup')
 
 class CommentSerializer(serializers.ModelSerializer):
     username = serializers.ReadOnlyField(source='user.username')
