@@ -28,6 +28,7 @@ router.register(r'comments', views.CommentView, basename='comment')
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
+    path('api/', include('zergcoach.urls')),
     path('token/', 
           jwt_views.TokenObtainPairView.as_view(), 
           name ='token_obtain_pair'),
