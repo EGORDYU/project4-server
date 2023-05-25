@@ -3,6 +3,7 @@ from .models import BuildOrder, Comment
 from django.contrib.auth.models import User
 from rest_framework import serializers
 import logging
+from .models import Favorite
 
 class BuildOrderSerializer(serializers.ModelSerializer):
     class Meta:
@@ -44,3 +45,15 @@ class UserCreateSerializer(serializers.ModelSerializer):
             logger.error(f"Error creating user: {e}")
             raise
 
+class FavoriteSerializer(serializers.ModelSerializer):
+    user_id = serializers.IntegerField(write_only=True)  # Add this line
+
+    class Meta:
+        model = Favorite
+        fields = ['user_id', 'build_order']
+
+    def create(self, validated_data):
+        user_id = validated_data.pop('user_id')
+        user = User.objects.get(id=user_id)
+        favorite = Favorite.objects.create(user=user, **validated_data)
+        return favorite

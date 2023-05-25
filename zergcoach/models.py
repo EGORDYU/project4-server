@@ -28,3 +28,14 @@ class Comment(models.Model):
 
     def __str__(self):
         return f'Comment by {self.user.username} on {self.build_order.title}'
+
+
+class Favorite(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    build_order = models.ForeignKey(BuildOrder, on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = [['user', 'build_order']]
+
+    def __str__(self):
+        return f'Favorite: {self.build_order.title} by {self.user.username}'

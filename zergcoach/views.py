@@ -11,6 +11,10 @@ from django.contrib.auth.models import User
 from rest_framework import generics
 from .serializers import UserCreateSerializer
 from django.contrib.auth import get_user_model
+from rest_framework import generics
+from .serializers import FavoriteSerializer
+from .serializers import Favorite
+from rest_framework.authentication import TokenAuthentication
 
 
 
@@ -100,3 +104,28 @@ class TokenRefreshView(APIView):
                 pass
         
         return Response(status=400)
+    
+
+
+
+class FavoriteView(generics.CreateAPIView):
+    queryset = Favorite.objects.all()
+    serializer_class = FavoriteSerializer
+
+    def perform_create(self, serializer):
+        user_id = self.request.data.get('user_id')
+        print('user_id:', user_id)  # Add this line to check the value of user_id
+        serializer.save(user_id=user_id)
+
+
+class DeleteFavoriteView(generics.DestroyAPIView):
+    queryset = Favorite.objects.all()
+    serializer_class = FavoriteSerializer  # Use the updated FavoriteSerializer
+
+    def get_object(self):
+        queryset = self.get_queryset()
+        obj = queryset.get(
+            user=self.request.user,
+            build_order_id=self.kwargs['build_order_id']
+        )
+        return obj
