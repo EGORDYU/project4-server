@@ -129,3 +129,32 @@ class DeleteFavoriteView(generics.DestroyAPIView):
             build_order_id=self.kwargs['build_order_id']
         )
         return obj
+
+
+class UserFavoritesView(generics.ListAPIView):
+    serializer_class = FavoriteSerializer
+
+    def get_queryset(self):
+        user_id = self.request.query_params.get('user_id')
+        if user_id:
+            return Favorite.objects.filter(user_id=user_id)
+        else:
+            return Favorite.objects.all()
+
+
+class UserFavoritesView(APIView):
+    def get(self, request, user_id):  # Add 'user_id' as an argument
+        user = User.objects.get(id=user_id)
+        favorites = user.favorite_set.all()  # Access the M2M relationship data
+        serialized_data = FavoriteSerializer(favorites, many=True).data
+        return Response(serialized_data)
+
+
+class BuildDetailView(APIView):
+    def get(self, request, build_id):
+        try:
+            build = BuildOrder.objects.get(id=build_id)
+            serializer = BuildOrderSerializer(build)
+            return Response(serializer.data)
+        except BuildOrder.DoesNotExist:
+            return Response({'error': 'Build not found'}, status=status.HTTP_404_NOT_FOUND)
