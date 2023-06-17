@@ -112,11 +112,11 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CORS_ALLOWED_ORIGINS = [
-    'https://zergcoach-d7f65394356e.herokuapp.com/',
+    'https://main--lustrous-kulfi-ced407.netlify.app',
 ]
 
 CORS_ORIGIN_WHITELIST = [
-    'https://zergcoach-d7f65394356e.herokuapp.com/',
+    'https://main--lustrous-kulfi-ced407.netlify.app',
 ]
 
 CORS_ALLOW_METHODS = [
