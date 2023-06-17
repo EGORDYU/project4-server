@@ -147,8 +147,13 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CORS_ALLOWED_ORIGINS = [
-    'http://localhost:3000',  # Add the origin of your React application
+    'https://main--lustrous-kulfi-ced407.netlify.app',  # Add the origin of your React application
     
 ]
+
+CORS_ORIGIN_WHITELIST = [
+    'https://main--lustrous-kulfi-ced407.netlify.app',
+]
+
 
 CORS_ALLOW_CREDENTIALS = True
