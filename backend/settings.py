@@ -113,10 +113,10 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CORS_ALLOWED_ORIGINS = [
-    'https://main--lustrous-kulfi-ced407.netlify.app',
+    '*',
 ]
 
 CORS_ORIGIN_WHITELIST = [
-    'https://main--lustrous-kulfi-ced407.netlify.app',
+    '*',
 ]
 
