@@ -1,2 +1,2 @@
-web: gunicorn zergcoach.wsgi
+web: gunicorn zergcoach.wsgi:application
 
