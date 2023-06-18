@@ -19,7 +19,11 @@ SECRET_KEY = 'django-insecure-221g=_j7qxjr8v&qt1(i2xbuo6o5ckh(p$58j%uevgz#+)w7ib
 
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'localhost',  # Example: Allow localhost for development
+    'zergcoach-d7f65394356e.herokuapp.com',  # Add your Heroku app domain here
+]
+
 
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_ALL_ORIGINS = True
