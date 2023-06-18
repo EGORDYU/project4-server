@@ -89,9 +89,14 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'zergcoach',
-    },
+        'NAME': 'd149d04gc0cr8k',
+        'USER': 'mksgzjrfqjzlmb',
+        'PASSWORD': 'b7c86730308eeccfb0754f19965f2054c6e0e0dcbaa23aa75ef29a68cbd256d5',
+        'HOST': 'ec2-3-93-160-246.compute-1.amazonaws.com',
+        'PORT': '5432',
+    }
 }
+
 
 AUTH_PASSWORD_VALIDATORS = [
     {
