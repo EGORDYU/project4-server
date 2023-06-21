@@ -33,15 +33,10 @@ from django.utils.decorators import method_decorator
 
 
 
-# Create your views here.
-@authentication_classes([TokenAuthentication])
-@permission_classes([IsAuthenticated])
 class BuildOrderView(viewsets.ModelViewSet):
     serializer_class = BuildOrderSerializer
     queryset = BuildOrder.objects.all()
 
-@authentication_classes([TokenAuthentication])
-@permission_classes([IsAuthenticated])
 class CommentView(viewsets.ModelViewSet):
     serializer_class = CommentSerializer
 
@@ -56,22 +51,15 @@ class CommentView(viewsets.ModelViewSet):
             queryset = queryset.filter(build_order_id=build_order_id)
         return queryset
 
-class HomeView(APIView):
+class HomeView(APIView):   
     def get(self, request):
-        content = {'message': 'Welcome to the JWT Authentication page using React Js and Django!'}
+        content = {'message': 'Welcome to the JWT  Authentication page using React Js and Django!'}
         return Response(content)
+    
 
 class LogoutView(APIView):
-    permission_classes = (IsAuthenticated,)
-
     def post(self, request):
-        try:
-            refresh_token = request.data["refresh_token"]
-            token = RefreshToken(refresh_token)
-            token.blacklist()
-            return Response(status=status.HTTP_205_RESET_CONTENT)
-        except Exception as e:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 @method_decorator(csrf_exempt, name='dispatch')
 class UserCreateView(APIView):
