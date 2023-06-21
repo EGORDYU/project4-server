@@ -15,7 +15,12 @@ class CommentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Comment
-        fields = ('id', 'build_order', 'user', 'content', 'username')
+        fields = ('id', 'build_order', 'content', 'username')
+
+    def create(self, validated_data):
+        user = self.context['request'].user  # Get the authenticated user from the request
+        comment = Comment.objects.create(user=user, **validated_data)
+        return comment
 
 
 

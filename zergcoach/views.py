@@ -16,7 +16,7 @@ from .serializers import FavoriteSerializer
 from .serializers import Favorite
 from rest_framework.authentication import TokenAuthentication
 from django.shortcuts import render
-from rest_framework import viewsets
+from rest_framework import viewsets, permissions
 from .serializers import BuildOrderSerializer, CommentSerializer
 from .models import BuildOrder, Comment
 from rest_framework.views import APIView
@@ -39,12 +39,9 @@ class BuildOrderView(viewsets.ModelViewSet):
 
 class CommentView(viewsets.ModelViewSet):
     serializer_class = CommentSerializer
+    permission_classes = [permissions.IsAuthenticated]  # Add the IsAuthenticated permission
 
     def get_queryset(self):
-        """
-        Optionally restricts the returned comments to a given build_order,
-        by filtering against a `build_order` query parameter in the URL.
-        """
         queryset = Comment.objects.all()
         build_order_id = self.request.query_params.get('build_order', None)
         if build_order_id is not None:
@@ -118,15 +115,15 @@ class TokenRefreshView(APIView):
 class FavoriteView(generics.CreateAPIView):
     queryset = Favorite.objects.all()
     serializer_class = FavoriteSerializer
+    permission_classes = [permissions.IsAuthenticated]  # Add the IsAuthenticated permission
 
     def perform_create(self, serializer):
-        user_id = self.request.data.get('user_id')
-        print('user_id:', user_id)  # Add this line to check the value of user_id
-        serializer.save(user_id=user_id)
+        serializer.save(user=self.request.user)  # Associate the favorite with the authenticated user
 
 class DeleteFavoriteView(generics.DestroyAPIView):
     queryset = Favorite.objects.all()
-    serializer_class = FavoriteSerializer  # Use the updated FavoriteSerializer
+    serializer_class = FavoriteSerializer
+    permission_classes = [permissions.IsAuthenticated]  # Add the IsAuthenticated permission
 
     def get_object(self):
         queryset = self.get_queryset()
