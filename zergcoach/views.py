@@ -48,9 +48,6 @@ class CommentView(viewsets.ModelViewSet):
             queryset = queryset.filter(build_order_id=build_order_id)
         return queryset
 
-    def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
-
 class HomeView(APIView):   
     def get(self, request):
         content = {'message': 'Welcome to the JWT  Authentication page using React Js and Django!'}
