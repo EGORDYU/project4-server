@@ -15,18 +15,33 @@ from rest_framework import generics
 from .serializers import FavoriteSerializer
 from .serializers import Favorite
 from rest_framework.authentication import TokenAuthentication
+from django.shortcuts import render
+from rest_framework import viewsets
+from .serializers import BuildOrderSerializer, CommentSerializer
+from .models import BuildOrder, Comment
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from rest_framework import status
+from rest_framework_simplejwt.tokens import RefreshToken
+from django.contrib.auth import get_user_model
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.decorators import authentication_classes, permission_classes
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
 
 
 
 
 # Create your views here.
-
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 class BuildOrderView(viewsets.ModelViewSet):
     serializer_class = BuildOrderSerializer
     queryset = BuildOrder.objects.all()
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated]
 
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 class CommentView(viewsets.ModelViewSet):
     serializer_class = CommentSerializer
 
@@ -41,34 +56,30 @@ class CommentView(viewsets.ModelViewSet):
             queryset = queryset.filter(build_order_id=build_order_id)
         return queryset
 
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated]
-
-class HomeView(APIView):   
-    permission_classes = (IsAuthenticated, )
+class HomeView(APIView):
     def get(self, request):
-        content = {'message': 'Welcome to the JWT  Authentication page using React Js and Django!'}
+        content = {'message': 'Welcome to the JWT Authentication page using React Js and Django!'}
         return Response(content)
-    
 
 class LogoutView(APIView):
-     permission_classes = (IsAuthenticated,)
-     def post(self, request):
-          
-          try:
-               refresh_token = request.data["refresh_token"]
-               token = RefreshToken(refresh_token)
-               token.blacklist()
-               return Response(status=status.HTTP_205_RESET_CONTENT)
-          except Exception as e:
-               return Response(status=status.HTTP_400_BAD_REQUEST)
+    permission_classes = (IsAuthenticated,)
 
+    def post(self, request):
+        try:
+            refresh_token = request.data["refresh_token"]
+            token = RefreshToken(refresh_token)
+            token.blacklist()
+            return Response(status=status.HTTP_205_RESET_CONTENT)
+        except Exception as e:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
 
-class UserCreateView(generics.CreateAPIView):
-    queryset = User.objects.all()
-    serializer_class = UserCreateSerializer
-
-
+@method_decorator(csrf_exempt, name='dispatch')
+class UserCreateView(APIView):
+    def post(self, request):
+        serializer = UserCreateSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 class UserProfileView(APIView):
     permission_classes = [IsAuthenticated]
@@ -82,8 +93,6 @@ class UserProfileView(APIView):
             # Include other profile data fields as needed
         }
         return Response(profile_data)
-
-    
 
 class TokenRefreshView(APIView):
     def post(self, request):
@@ -107,11 +116,8 @@ class TokenRefreshView(APIView):
             except:
                 # Token refresh error handling
                 pass
-        
+
         return Response(status=400)
-    
-
-
 
 class FavoriteView(generics.CreateAPIView):
     queryset = Favorite.objects.all()
@@ -121,7 +127,6 @@ class FavoriteView(generics.CreateAPIView):
         user_id = self.request.data.get('user_id')
         print('user_id:', user_id)  # Add this line to check the value of user_id
         serializer.save(user_id=user_id)
-
 
 class DeleteFavoriteView(generics.DestroyAPIView):
     queryset = Favorite.objects.all()
@@ -135,7 +140,6 @@ class DeleteFavoriteView(generics.DestroyAPIView):
         )
         return obj
 
-
 class UserFavoritesView(generics.ListAPIView):
     serializer_class = FavoriteSerializer
 
@@ -145,15 +149,6 @@ class UserFavoritesView(generics.ListAPIView):
             return Favorite.objects.filter(user_id=user_id)
         else:
             return Favorite.objects.all()
-
-
-class UserFavoritesView(APIView):
-    def get(self, request, user_id):  # Add 'user_id' as an argument
-        user = User.objects.get(id=user_id)
-        favorites = user.favorite_set.all()  # Access the M2M relationship data
-        serialized_data = FavoriteSerializer(favorites, many=True).data
-        return Response(serialized_data)
-
 
 class BuildDetailView(APIView):
     def get(self, request, build_id):
