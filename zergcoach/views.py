@@ -37,9 +37,9 @@ class BuildOrderView(viewsets.ModelViewSet):
     serializer_class = BuildOrderSerializer
     queryset = BuildOrder.objects.all()
 
-class CommentView(viewsets.ReadOnlyModelViewSet):
+class CommentView(viewsets.ModelViewSet):
     serializer_class = CommentSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]  # Allow authenticated users to create comments
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def get_queryset(self):
         queryset = Comment.objects.all()
@@ -47,6 +47,9 @@ class CommentView(viewsets.ReadOnlyModelViewSet):
         if build_order_id is not None:
             queryset = queryset.filter(build_order_id=build_order_id)
         return queryset
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
 
 class HomeView(APIView):   
     def get(self, request):
