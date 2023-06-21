@@ -24,6 +24,8 @@ from rest_framework.authentication import TokenAuthentication
 class BuildOrderView(viewsets.ModelViewSet):
     serializer_class = BuildOrderSerializer
     queryset = BuildOrder.objects.all()
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
 
 class CommentView(viewsets.ModelViewSet):
     serializer_class = CommentSerializer
@@ -38,6 +40,9 @@ class CommentView(viewsets.ModelViewSet):
         if build_order_id is not None:
             queryset = queryset.filter(build_order_id=build_order_id)
         return queryset
+
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
 
 class HomeView(APIView):   
     permission_classes = (IsAuthenticated, )
