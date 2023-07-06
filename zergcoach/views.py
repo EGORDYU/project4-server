@@ -117,9 +117,12 @@ class FavoriteView(generics.CreateAPIView):
     queryset = Favorite.objects.all()
     serializer_class = FavoriteSerializer
     permission_classes = [permissions.IsAuthenticated]  # Add the IsAuthenticated permission
+    authentication_classes = [JWTAuthentication]  # Add JWTAuthentication
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)  # Associate the favorite with the authenticated user
+
+
 
 class DeleteFavoriteView(generics.DestroyAPIView):
     queryset = Favorite.objects.all()
