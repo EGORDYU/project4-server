@@ -10,6 +10,10 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
+import dotenv
+
+dotenv.load_dotenv()
+
 from pathlib import Path
 from datetime import timedelta
 
@@ -86,16 +90,19 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'backend.wsgi.application'
 
+import os
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'd7bmelsqieg87k',
-        'USER': 'qsqswhatqkmxtg',
-        'PASSWORD': 'be84b7df9347c5f1718597b8993150aa46ee96f8ba36474b754e9b95dfa69d20',
-        'HOST': 'ec2-54-205-67-130.compute-1.amazonaws.com',
-        'PORT': '5432',
+        'NAME': os.getenv('DB_NAME'),
+        'USER': os.getenv('DB_USER'),
+        'PASSWORD': os.getenv('DB_PASSWORD'),
+        'HOST': os.getenv('DB_HOST'),
+        'PORT': os.getenv('DB_PORT'),
     }
 }
+
 
 
 
