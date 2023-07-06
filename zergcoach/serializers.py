@@ -53,9 +53,9 @@ class UserCreateSerializer(serializers.ModelSerializer):
 class FavoriteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Favorite
-        fields = ['build_order']
+        fields = ['user', 'build_order']
 
     def create(self, validated_data):
-        user = self.context['request'].user  # Get the authenticated user from the request
+        user = validated_data.pop('user', None) 
         favorite = Favorite.objects.create(user=user, **validated_data)
         return favorite
