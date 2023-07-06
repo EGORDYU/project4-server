@@ -137,11 +137,12 @@ class UserFavoritesView(generics.ListAPIView):
     serializer_class = FavoriteSerializer
 
     def get_queryset(self):
-        user_id = self.request.query_params.get('user_id')
-        if user_id:
-            return Favorite.objects.filter(user_id=user_id)
+        user = self.request.user  # Retrieve the authenticated user
+        if user.is_authenticated:  # Check if the user is authenticated
+            return Favorite.objects.filter(user=user)  # Filter favorites based on the authenticated user
         else:
-            return Favorite.objects.all()
+            return Favorite.objects.none()  # Return an empty queryset if the user is not authenticated
+
 
 class BuildDetailView(APIView):
     def get(self, request, build_id):
