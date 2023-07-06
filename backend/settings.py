@@ -40,7 +40,6 @@ INSTALLED_APPS = [
     'rest_framework',
     'zergcoach',
     'rest_framework_simplejwt.token_blacklist',
-    'djangorestframework_simplejwt',
 ]
 
 MIDDLEWARE = [

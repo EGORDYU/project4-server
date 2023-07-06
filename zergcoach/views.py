@@ -29,7 +29,6 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework.decorators import authentication_classes, permission_classes
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
-from rest_framework_simplejwt.authentication import JWTAuthentication
 
 
 
@@ -117,12 +116,9 @@ class FavoriteView(generics.CreateAPIView):
     queryset = Favorite.objects.all()
     serializer_class = FavoriteSerializer
     permission_classes = [permissions.IsAuthenticated]  # Add the IsAuthenticated permission
-    authentication_classes = [JWTAuthentication]  # Add JWTAuthentication
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)  # Associate the favorite with the authenticated user
-
-
 
 class DeleteFavoriteView(generics.DestroyAPIView):
     queryset = Favorite.objects.all()
@@ -139,11 +135,13 @@ class DeleteFavoriteView(generics.DestroyAPIView):
 
 class UserFavoritesView(generics.ListAPIView):
     serializer_class = FavoriteSerializer
-    authentication_classes = [JWTAuthentication]  # Add JWTAuthentication
 
     def get_queryset(self):
-        user = self.request.user  # Retrieve the user from the token
-        return Favorite.objects.filter(user=user)
+        user = self.request.user  # Retrieve the authenticated user
+        if user.is_authenticated:  # Check if the user is authenticated
+            return Favorite.objects.filter(user=user)  # Filter favorites based on the authenticated user
+        else:
+            return Favorite.objects.none()  # Return an empty queryset if the user is not authenticated
 
 
 class BuildDetailView(APIView):
