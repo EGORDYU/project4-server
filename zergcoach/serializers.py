@@ -51,14 +51,11 @@ class UserCreateSerializer(serializers.ModelSerializer):
             raise
 
 class FavoriteSerializer(serializers.ModelSerializer):
-    user_id = serializers.IntegerField(write_only=True)  # Add this line
-
     class Meta:
         model = Favorite
-        fields = ['user_id', 'build_order']
+        fields = ['build_order']
 
     def create(self, validated_data):
-        user_id = validated_data.pop('user_id')
-        user = User.objects.get(id=user_id)
+        user = self.context['request'].user  # Get the authenticated user from the request
         favorite = Favorite.objects.create(user=user, **validated_data)
         return favorite
